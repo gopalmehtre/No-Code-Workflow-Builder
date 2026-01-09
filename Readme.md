@@ -1,12 +1,6 @@
-# FlowAI Studio 🚀
+# FlowAI Studio
 
 A powerful **No-Code Workflow Builder** for creating AI-powered document processing workflows. Build custom workflows to upload PDFs, extract knowledge, and chat with your documents using drag-and-drop interface and advanced AI models.
-
-![Python](https://img.shields.io/badge/python-3.11-blue.svg)
-![React](https://img.shields.io/badge/react-19.2-blue.svg)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.109-green.svg)
-![Docker](https://img.shields.io/badge/docker-ready-blue.svg)
-
 ---
 
 ## ✨ Key Features
@@ -77,9 +71,8 @@ docker-compose up -d
 docker-compose exec backend alembic stamp head
 
 # 5. Access
-# Frontend: http://localhost
-# API Docs: http://localhost:8080/docs
-
+Frontend: http://localhost
+API Docs: http://localhost:8080/docs
 ---
 
 ## 💻 Local Development Setup
