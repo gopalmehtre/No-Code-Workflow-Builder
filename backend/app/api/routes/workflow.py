@@ -5,6 +5,7 @@ import time
 
 from app.database import get_db
 from app.models.workflow import Workflow
+from app.models.chat import ChatHistory
 from app.schemas.workflow import (
     WorkflowCreate,
     WorkflowUpdate,
@@ -67,9 +68,10 @@ def save_workflow(workflow: WorkflowCreate, db: Session = Depends(get_db)):
     nodes = [node.dict() for node in workflow.nodes]
     edges = [edge.dict() for edge in workflow.edges]
     
-    is_valid, message = validate_workflow(nodes, edges)
-    if not is_valid:
-        raise HTTPException(status_code=400, detail=f"Invalid workflow: {message}")
+    if nodes:
+        is_valid, message = validate_workflow(nodes, edges)
+        if not is_valid:
+            raise HTTPException(status_code=400, detail=f"Invalid workflow: {message}")
     
     db_workflow = Workflow(
         name=workflow.name,
@@ -131,6 +133,8 @@ def delete_workflow(workflow_id: int, db: Session = Depends(get_db)):
     workflow = db.query(Workflow).filter(Workflow.id == workflow_id).first()
     if not workflow:
         raise HTTPException(status_code=404, detail="Workflow not found")
+    
+    db.query(ChatHistory).filter(ChatHistory.workflow_id == workflow_id).delete()
     
     db.delete(workflow)
     db.commit()

@@ -63,17 +63,13 @@ class KnowledgeBaseComponent(BaseComponent):
         logger.info(f"KnowledgeBaseComponent [{self.node_id}]: Retrieving context")
         
         try:
-            # Generate query embedding
-            query_embedding = generate_embeddings(query)[0]
-            
-            # Query similar documents
+            query_embedding = generate_embeddings([query])[0]
             results = vector_service.query_similar(
                 collection_name=self.collection_name,
                 query_embedding=query_embedding,
                 n_results=self.top_k
             )
             
-            # Combine retrieved documents
             context = "\n\n".join(results.get("documents", []))
             
             logger.info(f"Retrieved {len(results.get('documents', []))} documents")
@@ -117,7 +113,6 @@ class LLMEngineComponent(BaseComponent):
         logger.info(f"LLMEngineComponent [{self.node_id}]: Generating response")
         
         try:
-            # Generate response
             result = generate_response(
                 query=query,
                 context=context,
@@ -145,7 +140,6 @@ class LLMEngineComponent(BaseComponent):
             }
     
     def validate_config(self) -> bool:
-        # LLM component can work with defaults
         return True
 
 class OutputComponent(BaseComponent):
@@ -168,7 +162,6 @@ class OutputComponent(BaseComponent):
     def validate_config(self) -> bool:
         return True
 
-# Component factory
 def create_component(node_type: str, node_id: str, config: Dict[str, Any]) -> BaseComponent:
     
     component_map = {

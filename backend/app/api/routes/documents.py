@@ -12,6 +12,10 @@ from app.service.pdf_service import extract_text_from_pdf
 from app.service.embedding_service import generate_embeddings, chunk_text
 from app.service.vector_service import vector_service
 from app.config import settings
+import traceback
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
@@ -24,11 +28,11 @@ async def upload_document(
         if not file.filename.endswith('.pdf'):
             raise HTTPException(status_code=400, detail="Only PDF files are supported")
 
-        os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
+        os.makedirs(settings.upload_dir, exist_ok=True)
         
         file_id = str(uuid.uuid4())
         filename = f"{file_id}_{file.filename}"
-        file_path = os.path.join(settings.UPLOAD_DIR, filename)
+        file_path = os.path.join(settings.upload_dir, filename)
         
         with open(file_path, "wb") as f:
             content = await file.read()
@@ -85,6 +89,9 @@ async def upload_document(
         )
     
     except Exception as e:
+        logger.error(f"Upload error: {str(e)}")
+        logger.error(traceback.format_exc())
+        
         if 'document' in locals():
             document.status = "failed"
             document.error_message = str(e)

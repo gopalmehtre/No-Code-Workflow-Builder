@@ -71,8 +71,12 @@ class WorkflowExecutor:
     
     def execute(self, query: str) -> Dict[str, Any]:
         try:
+            logger.info(f"Starting workflow execution with query: {query}")
+            
             # Validate workflow
             is_valid, error_msg = validate_workflow(self.nodes, self.edges)
+            logger.info(f"Validation result: is_valid={is_valid}, message={error_msg}")
+            
             if not is_valid:
                 return {
                     "success": False,
@@ -80,8 +84,15 @@ class WorkflowExecutor:
                 }
             
             # Get execution order
-            execution_order = self._get_execution_order()
-            logger.info(f"Execution order: {execution_order}")
+            try:
+                execution_order = self._get_execution_order()
+                logger.info(f"Execution order: {execution_order}")
+            except Exception as e:
+                logger.error(f"Error getting execution order: {str(e)}")
+                return {
+                    "success": False,
+                    "error": f"Error determining execution order: {str(e)}"
+                }
             
             # Initialize data with query
             current_data = {"query": query}
@@ -140,7 +151,7 @@ class WorkflowExecutor:
             }
         
         except Exception as e:
-            logger.error(f"Workflow execution error: {str(e)}")
+            logger.error(f"Workflow execution error: {str(e)}", exc_info=True)
             return {
                 "success": False,
                 "error": str(e)

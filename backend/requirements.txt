@@ -19,6 +19,7 @@ pypdf==4.0.0
 # AI/ML services
 openai==1.10.0
 chromadb==0.4.22
+numpy<2.0.0
 
 # Web search
 google-search-results==2.4.2

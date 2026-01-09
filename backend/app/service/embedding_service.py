@@ -1,45 +1,23 @@
 from openai import OpenAI
-from app.config import settings
-from typing import List, Union
 import logging
+from app.config import settings
 
 logger = logging.getLogger(__name__)
 
 def get_embedding_client():
-    if settings.LLM_PROVIDER == "gemini":
+    if settings.llm_provider == "gemini":
         return OpenAI(
-            api_key=settings.GEMINI_API_KEY,
-            base_url=settings.GEMINI_BASE_URL
+            api_key=settings.gemini_api_key,
+            base_url=settings.gemini_base_url
         )
     else:
-        return OpenAI(api_key=settings.OPENAI_API_KEY)
+        return OpenAI(api_key=settings.openai_api_key)
 
-def generate_embeddings(texts: Union[str, List[str]], model: str= None) -> List[List[float]]:
-
-    try:
-        client= get_embedding_client()
-
-        if isinstance(texts, str):
-            texts = [texts]
-
-        if model is None:
-            model = "text-embedding-004" if settings.LLM_PROVIDER == "gemini" else "text-embedding-ada-002"
-
-        response = client.embeddings.create(
-            input=texts,
-            model=model
-        )
-
-        embeddings = [item.embedding for item in response.data]
-
-        logger.info(f"Generated {len(embeddings)} embeddings using {model}")
-        return embeddings
-
-    except Exception as e:
-        logger.error(f"Error generating embeddings: {str(e)} ")
-        raise
-
-def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 200) -> List[str]:
+def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 200) -> list:
+    """Split text into overlapping chunks for better retrieval."""
+    if not text:
+        return []
+    
     chunks = []
     start = 0
     text_length = len(text)
@@ -47,7 +25,34 @@ def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 200) -> List[st
     while start < text_length:
         end = start + chunk_size
         chunk = text[start:end]
-        chunks.append(chunk)
-        start += (chunk_size - overlap)
+        
+        if end < text_length:
+            last_period = chunk.rfind('.')
+            last_newline = chunk.rfind('\n')
+            break_point = max(last_period, last_newline)
+            if break_point > chunk_size // 2:
+                chunk = chunk[:break_point + 1]
+                end = start + break_point + 1
+        
+        chunks.append(chunk.strip())
+        start = end - overlap
     
-    return chunks
+    return [c for c in chunks if c]
+
+def generate_embeddings(texts: list) -> list:
+    try:
+        client = get_embedding_client()
+        model = "text-embedding-004" if settings.llm_provider == "gemini" else "text-embedding-ada-002"
+        
+        embeddings = []
+        for text in texts:
+            response = client.embeddings.create(
+                model=model,
+                input=text
+            )
+            embeddings.append(response.data[0].embedding)
+        
+        return embeddings
+    except Exception as e:
+        logger.error(f"Embedding error: {e}")
+        return []

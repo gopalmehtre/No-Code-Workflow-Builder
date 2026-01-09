@@ -1,32 +1,45 @@
+import os
 from pydantic_settings import BaseSettings
-from typing import List
-import json
+from pydantic import ConfigDict
 
 class Settings(BaseSettings):
-    DATABASE_URL:str = "postgresql://postgres:postgres@localhost:5433/workflow_db"
-
-    GEMINI_API_KEY: str = ""
-    GEMINI_BASE_URL: str = "https://generativelanguage.googleapis.com/v1beta/openai/"
-    LLM_PROVIDER: str = "gemini"
-
-    SERPAPI_KEY: str = ""
-
-    APP_NAME: str = "No-Code Workflow Builder"
-    DEBUG: bool = True
-    ALLOWED_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:5173"]
-
-    CHROMA_HOST: str = "localhost"
-    CHROMA_PORT: int = 8000
-    CHROMA_PERSIST_DIRECTORY: str = "./chroma_data"
-
-    UPLOAD_DIR: str = "./uploads"
-    MAX_UPLOAD_SIZE: int = 10485760
-
-    HOST: str = "0.0.0.0"
-    PORT: int = 8000
-
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
+    model_config = ConfigDict(
+        env_file=".env",
+        case_sensitive=False,
+        extra='ignore'
+    )
+    
+    # Database
+    database_url: str = "postgresql://postgres:postgres@postgres:5432/workflow_db"
+    
+    # ChromaDB
+    chroma_host: str = "chromadb"
+    chroma_port: int = 8000
+    chroma_persist_directory: str = "./chroma_data"
+    
+    # Gemini API
+    gemini_api_key: str = ""
+    gemini_base_url: str = "https://generativelanguage.googleapis.com/v1beta/openai/"
+    
+    # OpenAI (optional fallback)
+    openai_api_key: str = ""
+    
+    # LLM Provider
+    llm_provider: str = "gemini"
+    
+    # CORS
+    allowed_origins: str = '["http://localhost:3000","http://localhost:5173","http://localhost:80","http://localhost"]'
+    
+    # Application
+    app_name: str = "FlowAI Studio"
+    debug: bool = False
+    
+    # Server
+    host: str = "0.0.0.0"
+    port: int = 8080
+    
+    # File Upload
+    upload_dir: str = "./uploads"
+    max_upload_size: int = 10485760
 
 settings = Settings()
