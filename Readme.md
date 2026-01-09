@@ -1,9 +1,8 @@
 # FlowAI Studio
-
-A powerful **No-Code Workflow Builder** for creating AI-powered document processing workflows. Build custom workflows to upload PDFs, extract knowledge, and chat with your documents using drag-and-drop interface and advanced AI models.
+- A powerful **No-Code Workflow Builder** for creating AI-powered document processing workflows. Build custom workflows to upload PDFs, extract knowledge, and chat with your documents using drag-and-drop interface and advanced AI models.
 ---
 
-## ✨ Key Features
+## Key Features
 
 ### Implemented
 - **Visual Workflow Builder** - Drag-and-drop components, real-time validation
@@ -16,7 +15,7 @@ A powerful **No-Code Workflow Builder** for creating AI-powered document process
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 **Frontend:** React 19.2 • React Flow 11.11 • Zustand 5.0 • Tailwind CSS 3.4 • Vite 7.2
 
@@ -30,13 +29,13 @@ A powerful **No-Code Workflow Builder** for creating AI-powered document process
 
 ---
 
-## 📦 Prerequisites
+## Prerequisites
 
 **For Docker (Recommended):**
 - Docker 20.10+ & Docker Compose 2.0+
 - 4GB RAM minimum
 
-📘 **Complete Docker guide:** [DOCKER.md](DOCKER.md)
+ **Complete Docker guide:** [DOCKER.md](DOCKER.md)
 
 **For Local Development:**
 - Python 3.11+ • Node.js 18+ • PostgreSQL 15+
@@ -44,7 +43,7 @@ A powerful **No-Code Workflow Builder** for creating AI-powered document process
 
 ---
 
-## 🚀 Quick Start (Docker)
+## Quick Start (Docker)
 
 ```bash
 # 1. Clone and navigate
@@ -63,19 +62,19 @@ ALLOWED_ORIGINS=["http://localhost:3000","http://localhost:5173"]
 MAX_UPLOAD_SIZE=10485760  # 10MB
 ```
 
-# 3. Build and start
+## 3. Build and start
 docker-compose build
 docker-compose up -d
 
-# 4. Initialize database
+## 4. Initialize database
 docker-compose exec backend alembic stamp head
 
-# 5. Access
-Frontend: http://localhost
-API Docs: http://localhost:8080/docs
+## 5. Access
+- Frontend: http://localhost
+- API Docs: http://localhost:8080/docs
 ---
 
-## 💻 Local Development Setup
+## Local Development Setup
 
 **Backend:**
 ```bash
@@ -101,7 +100,7 @@ npm run dev
 
 ---
 
-## 📖 Usage
+## Usage
 
 1. **Create Workflow** - Navigate to http://localhost, click "Create New Workflow"
 2. **Add Components** - Drag User Query, Knowledge Base, LLM Engine, and Output nodes
@@ -114,21 +113,21 @@ npm run dev
 
 ---
 
-## 🚧 Future Enhancements
+## Future Enhancements
 
-### 🔐 Authentication & Security
+### Authentication & Security
 - User registration and JWT-based authentication
 - Role-based access control (Admin, User, Viewer)
 - Workflow sharing and collaboration
 - API key management
 
-### 📊 Analytics & Monitoring
+### Analytics & Monitoring
 - Execution analytics dashboard
 - Usage statistics and cost tracking
 - Response time and error monitoring
 - Activity logs
 
-### ⚡ Enhanced Workflows
+### Enhanced Workflows
 - Conditional logic (if/else branches)
 - Loops and iterations
 - Variables and data transformation
@@ -136,14 +135,14 @@ npm run dev
 - Parallel execution
 - Version control for workflows
 
-### 🤖 AI Improvements
+### AI Improvements
 - Multi-model support (Claude, GPT-4, Llama)
 - Model comparison mode
 - Advanced RAG (hybrid search, re-ranking, query expansion)
 - Fine-tuning capabilities
 - Agent features with tool use
 
-### 📁 Document Management
+### Document Management
 - Support for Word, Excel, PowerPoint files
 - OCR for scanned documents and images
 - Web page import (URL)
@@ -151,7 +150,7 @@ npm run dev
 - Document versioning
 - Collections and grouping
 
-### 🎨 UI/UX Enhancements
+### UI/UX Enhancements
 - Dark mode
 - Mobile responsive design
 - Drag-and-drop file upload
@@ -160,7 +159,7 @@ npm run dev
 - Multi-language support
 - Accessibility (WCAG 2.1 AA)
 
-### 🔗 Integrations
+### Integrations
 - Webhooks for external triggers
 - REST API calls from workflows
 - Slack integration
@@ -169,14 +168,14 @@ npm run dev
 - Zapier/Make connectors
 - Export results (CSV, JSON, PDF)
 
-### 🧪 Testing & Quality
+### Testing & Quality
 - Unit and integration tests
 - E2E tests with Playwright
 - Load testing
 - Code coverage
 - CI/CD pipeline
 
-### 📈 Scalability
+### Scalability
 - Redis caching
 - Celery background tasks
 - Message queue (RabbitMQ)
@@ -184,7 +183,7 @@ npm run dev
 - CDN integration
 - Database replicas
 
-### 🛡️ Security Hardening
+### Security Hardening
 - Rate limiting
 - Input sanitization
 - Security headers
