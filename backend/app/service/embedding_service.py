@@ -13,6 +13,8 @@ def get_embedding_client():
     else:
         return OpenAI(api_key=settings.openai_api_key)
 
+import httpx
+
 def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 200) -> list:
     """Split text into overlapping chunks for better retrieval."""
     if not text:
@@ -39,20 +41,51 @@ def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 200) -> list:
     
     return [c for c in chunks if c]
 
+def _generate_embeddings_gemini(texts: list) -> list:
+    """Generate embeddings using Google's native embedContent API."""
+    api_key = settings.gemini_api_key
+    model = "gemini-embedding-001"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:batchEmbedContents"
+    
+    payload = {
+        "requests": [
+            {
+                "model": f"models/{model}",
+                "content": {"parts": [{"text": text}]}
+            }
+            for text in texts
+        ]
+    }
+
+    with httpx.Client(timeout=60.0) as client:
+        response = client.post(url, params={"key": api_key}, json=payload)
+
+    if response.status_code != 200:
+        raise ValueError(f"Gemini API error: {response.text}")
+
+    data = response.json()
+    embeddings = [item.get("values", []) for item in data.get("embeddings", [])]
+    return embeddings
+
 def generate_embeddings(texts: list) -> list:
+    if not texts:
+        return []
+        
     try:
-        client = get_embedding_client()
-        model = "text-embedding-004" if settings.llm_provider == "gemini" else "text-embedding-ada-002"
-        
-        embeddings = []
-        for text in texts:
+        if settings.llm_provider == "gemini":
+            embeddings = _generate_embeddings_gemini(texts)
+        else:
+            client = get_embedding_client()
             response = client.embeddings.create(
-                model=model,
-                input=text
+                model="text-embedding-ada-002",
+                input=texts
             )
-            embeddings.append(response.data[0].embedding)
-        
+            embeddings = [data.embedding for data in response.data]
+            
+        if not embeddings or not all(embeddings):
+            raise ValueError("Embedding generation failed — got empty embeddings")
+            
         return embeddings
     except Exception as e:
         logger.error(f"Embedding error: {e}")
-        return []
+        raise ValueError(f"Failed to generate embeddings: {str(e)}")
